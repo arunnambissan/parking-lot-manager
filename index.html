@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Parking Lot Manager</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="./bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    [v-cloak] {
+      display: none;
+    }
+
+    .allotted-slots {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .allotted-cell {
+      width: 150px;
+      padding: 2px;
+      border-radius: 5px;
+    }
+
+    .allotted-slot-value {
+      padding: 20px;
+      border: 1px solid lightgrey;
+      text-align: center;
+    }
+
+    .allotted-slot-key {
+      font-weight: bold;
+      padding: 5px 20px 5px 20px;
+      border: 1px solid lightgrey;
+      text-align: center;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">Parking Lot Manager</a>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="container" id="app" v-cloak>
+    <div class="row">
+
+      <div class="col-sm-12 mt-3" style="min-height: 66px">
+        <div :class="'alert alert-' + (message.type === 'error' ? 'danger' : 'success')" role="alert"
+          v-show="message.type">
+          {{message.text}}
+        </div>
+      </div>
+
+      <div class="col-sm-12 border p-3">
+        <div class="row">
+          <div class="col-sm-6">
+            <input class="form-control" type="text" placeholder="Vehicle registration number" v-model="regNo"
+              @keyup="regNo = $event.target.value.toUpperCase()" @keydown="message={}" maxlength="12" />
+          </div>
+          <div class="col-sm-6">
+            <button class="btn btn-success" type="button" @click="allocateVehicle()">Allocate</button>
+            <button class="btn btn-danger" type="button" @click="deAllocateVehicle()">Deallocate</button>
+            <button class="btn btn-info" type="button" @click="findVehicle()">Find Vehicle</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-12 mt-4 border p-3">
+        <div class="row">
+          <div class="col-sm-6">
+            <input class="form-control" type="text" placeholder="Slot number" v-model="slot"
+              @keyup="slot = $event.target.value.toUpperCase()" @keydown="message={}" />
+          </div>
+          <div class="col-sm-6">
+            <button class="btn btn-info" type="button" @click="findSlot()">Find Slot</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-12 mt-5 border p-3">
+        <h5 class="border-bottom p-2">Allotted Slots</h5>
+
+        <div v-if="totalNumberOfSlots===0" class="text-info mt-4 text-center">
+          No allocated slots
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 allotted-slots mt-3 ml-4">
+            <div class="allotted-cell" v-for="key in totalNumberOfSlots" v-bind:id="'P' + key">
+              <div class="allotted-slot-key">
+                P{{key}}
+              </div>
+              <div class="allotted-slot-value">
+                {{slots['P' + key] || '&nbsp;'}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-12 mt-5 border p-3 mb-5">
+        <div class="row">
+          <div class="col-sm-2 mt-2">
+            Total number of slots
+          </div>
+          <div class="col-sm-4">
+            <input class="form-control" type="text" placeholder="Total slots" v-model="editTotalNumberOfSlots"
+              @keydown="message={}"
+              @keyup="editTotalNumberOfSlots = $event.target.value === '' ? '' : isNaN(parseInt($event.target.value)) ? totalNumberOfSlots : parseInt($event.target.value)" />
+          </div>
+          <div class="col-sm-6">
+            <button class="btn btn-success" type="button" @click="updateTotalSlots()">Update</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="./parking-lot-manager.js"></script>
+</body>
+
+</html>
